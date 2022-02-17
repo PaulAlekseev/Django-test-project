@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 
 def home(request):
@@ -27,7 +27,18 @@ def home(request):
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all().order_by('-created')
-    context = {'room': room, 'room_messages': room_messages}
+    participants = room.participants.all()
+
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('room', pk=room.id)
+
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
     return render(request, 'main/room.html', context)
 
 
