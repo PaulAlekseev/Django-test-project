@@ -5,7 +5,7 @@
 <style>
     .home-container{
         display: grid;
-        grid-template-columns: 1fr 3fr;
+        grid-template-columns: 1fr 3fr 1fr;
     }
 </style>
 
@@ -55,6 +55,9 @@
 
     </div>
 
+    <div>
+        {% include 'main/recent_activity.html' %}
+    </div>
 </div>
 
 {% endblock content %}
